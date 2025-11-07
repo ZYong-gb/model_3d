@@ -1,0 +1,10 @@
+# cupy
+probreg
+
+opencv-python
+watchdog
+paramiko
+open3d
+
+cupy-cuda12x
+transforms3d

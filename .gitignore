@@ -1,0 +1,31 @@
+# Model store
+model_store_dir/*
+!model_store_dir/.gitkeep
+
+# FoundationStereo
+model_3d/model_examples/FoundationStereo/docker/FoundationStereo/*
+!model_3d/model_examples/FoundationStereo/docker/FoundationStereo/.gitkeep
+
+# AdelaiDepth - Minist_Test
+model_3d/model_examples/AdelaiDepth-main/docker/Minist_Test/*
+!model_3d/model_examples/AdelaiDepth-main/docker/Minist_Test/.gitkeep
+
+# AdelaiDepth - torchsparse
+model_3d/model_examples/AdelaiDepth-main/docker/torchsparse-1.2.0/*
+!model_3d/model_examples/AdelaiDepth-main/docker/torchsparse-1.2.0/.gitkeep
+
+# Point cloud registration outputs and logs
+model_3d/Point_cloud_registration/probreg/input_ply/*
+!model_3d/Point_cloud_registration/probreg/input_ply/.gitkeep
+
+model_3d/Point_cloud_registration/probreg/output_ply/*
+!model_3d/Point_cloud_registration/probreg/output_ply/.gitkeep
+
+model_3d/Point_cloud_registration/probreg/log/*
+!model_3d/Point_cloud_registration/probreg/log/.gitkeep
+
+# 额外添加：直接忽略所有大文件类型
+*.ply
+*.bin
+*.pth
+*.pkl

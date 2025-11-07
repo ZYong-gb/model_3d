@@ -1,0 +1,8 @@
+# .condarc
+channels:
+  - pytorch
+  - defaults
+  - conda-forge
+
+channel_alias: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+show_channel_urls: true

@@ -1,0 +1,95 @@
+# 确保镜像与2060的驱动兼容（CUDA 12.2）
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+
+# ========== 支持构建时传入代理 ==========
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+ARG http_proxy
+ARG https_proxy
+
+ENV HTTP_PROXY=${HTTP_PROXY}
+ENV HTTPS_PROXY=${HTTPS_PROXY}
+ENV http_proxy=${http_proxy}
+ENV https_proxy=${https_proxy}
+
+# 设置非交互式安装
+ENV DEBIAN_FRONTEND=noninteractive
+
+# # 可选：替换为阿里云源
+# RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list && \
+#     sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
+
+# 安装系统依赖
+RUN apt-get update && apt-get install -y \
+    git \
+    wget \
+    curl \
+    unzip \
+    build-essential \
+    cmake \
+    ninja-build \
+    pkg-config \
+    nodejs \
+    npm \
+    python3-pip \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxrender1 \
+    libxext6 \
+    libglvnd0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安装 Miniconda 并接受 ToS
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
+    bash /tmp/miniconda.sh -b -p /opt/conda && \
+    rm /tmp/miniconda.sh && \
+    # ✅ 关键：接受服务条款
+    /opt/conda/bin/conda init bash && \
+    . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate base && \
+    /opt/conda/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
+    /opt/conda/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r && \
+    # 继续更新 conda 和清理
+    /opt/conda/bin/conda update -n base -c defaults conda -y && \
+    /opt/conda/bin/conda clean -ya
+
+
+# # 配置 Conda 国内镜像源
+# RUN /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main && \
+#     /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free && \
+#     /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge && \
+#     /opt/conda/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch && \
+#     /opt/conda/bin/conda config --set show_channel_urls yes && \
+#     /opt/conda/bin/conda clean -ya
+
+# 设置 Conda 路径（仅 base）
+ENV PATH /opt/conda/bin:$PATH
+
+# 创建并更新 Conda 环境
+RUN conda create -n myenv python=3.11 -y
+
+# 在 myenv 环境中安装核心包
+RUN conda run -n myenv pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 \
+    scikit-image omegaconf opencv-contrib-python imgaug \
+    timm albumentations jupyterlab scipy joblib scikit-learn \
+    ruamel.yaml trimesh pyyaml imageio open3d transformations \
+    einops gdown xformers==0.0.28.post1 huggingface-hub
+
+# 安装 flash-attn（推荐使用预编译 wheel）
+# 方式1：从 PyPI 尝试（可能源码编译）
+RUN conda run -n myenv pip install flash-attn --no-cache-dir --no-build-isolation
+
+
+# 设置工作目录
+WORKDIR /model/FoundationStereo
+
+# 复制项目文件
+COPY ./FoundationStereo/ ./
+
+# 验证环境
+RUN conda info --envs
+
+# 入口点
+ENTRYPOINT ["conda", "run", "-n", "myenv", "python", "scripts/run_demo.py"]
+
