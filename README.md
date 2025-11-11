@@ -11,7 +11,7 @@
 - model_3d/model_examples/MoGe：能够从单目开放域图像中恢复出三维几何信息，包括测距点云、测距深度图、法线图以及相机的视场角等信息。
 - model_3d/model_examples/BridgeDepth：需双目相机，输出3d点云图，深度图，视差图
 - model_3d/model_examples/TurboReg：3D点云配准算法项目
-
+- model_3d/model_examples/VisFusion： 通过RGB、深度、相机位姿和内参数据实时重建3d模型（训练的ckpt用于高质量重建）
 - model_3d/model_examples/Marigold: 密集图像分析任务，包括单目深度估计、表面法线预测以及图像内在结构分析（模型下载太慢）
 
 

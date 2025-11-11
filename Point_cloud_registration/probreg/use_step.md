@@ -34,7 +34,7 @@ bash gpu_run.sh
 # generation and registration
 bash all_run.sh
 ```
-scp -P 11202 -r zqdl_ai2060@183.221.0.158:/home/zqdl_ai2060/zy_account/model_3d/Point_cloud_registration/probreg/output_ply D:\images\配准结果
+scp -P 11202 -r zqdl_ai2060@183.221.0.158:/home/zqdl_ai2060/zy_account/model_3d/Point_cloud_registration/probreg/output_ply D:\images\配准结果\probreg
 
 
 ### 自动化流程---点云生成和配准

@@ -209,7 +209,8 @@ max_correspondence_distance = 100.0    # ICP 最大对应距离
 # ----------------------------
 
 # 获取所有以 "-pcd.ply" 结尾的文件
-all_files = [f for f in os.listdir(input_folder) if f.endswith("-pcd.ply")]
+# all_files = [f for f in os.listdir(input_folder) if f.endswith("-pcd.ply")]
+all_files = [f for f in os.listdir(input_folder) if f.endswith("-pcd.pcd")]
 
 # 按文件名前缀的数字排序（如 "1-pcd.ply" -> 1, "10-pcd.ply" -> 10）
 all_files.sort(key=lambda x: int(x.split('-')[0]))
