@@ -16,7 +16,7 @@ docker run -it \
     -v "$DIR"/Minist_Test/test_images:/model/Minist_Test/test_images \
     -w /model/AdelaiDepth-main/LeReS/Minist_Test \
     --entrypoint /bin/bash \
-    adelaidepth_main:latest \
+    adelaidepth_main:latest
 
 
 

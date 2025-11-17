@@ -72,3 +72,27 @@ python run_video.py --encoder vitl --video-path assets/examples_video --outdir a
 ### 将结果图传到 windows 系统查看
 scp -P 11202 -r zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/Depth-Anything-V2-main/assets D:\images\Depth-Anything-V2
 
+
+
+## docker 打包
+```bash
+# 1.构建 dockerfile 文件
+# 2.复制 docker 文件夹到 /mnt/data2/zy_2025/github_store/BridgeDepth 路径
+cp -r /home/zqdl_ai2060/zy_account/model_3d/model_examples/Depth-Anything-V2/docker /mnt/data2/zy_2025/github_store/Depth-Anything-V2-main
+
+# 3.打开代理 privoxy
+
+# 4.构建镜像
+cd /mnt/data2/zy_2025/github_store/Depth-Anything-V2-main/docker
+bash build_image.sh
+
+# 5.运行容器
+cd /mnt/data2/zy_2025/github_store/Depth-Anything-V2-main/docker
+bash run_container.sh
+
+# 输出结果卷挂载：
+# /mnt/data2/zy_2025/github_store/Depth-Anything-V2-main/docker_demo_output:/model/Depth-Anything-V2/docker_demo_output
+# 查看图片：
+cd /mnt/data2/zy_2025/github_store/Depth-Anything-V2-main/docker_demo_output
+cd /model/Depth-Anything-V2/docker_demo_output
+```

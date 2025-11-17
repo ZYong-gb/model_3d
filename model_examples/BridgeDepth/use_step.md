@@ -80,9 +80,32 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 # 临时清理缓存
 python -c "import torch; torch.cuda.empty_cache()"
 
+cd /mnt/data2/zy_2025/github_store/BridgeDepth
+conda activate bridgedepth
+
 # 法一：从 huggingface 在线下载模型
 # python infer.py --input /mnt/data2/zy_2025/github_store/FoundationStereo/assets/left.png /mnt/data2/zy_2025/github_store/FoundationStereo/assets/right.png --output ./assets/out_images --from-pretrained rvc_pretrain
 
 # 法二： 从本地路径通过名称加载模型 bridge_rvc_pretrain.pth
-python infer.py --input ./assets/input_images/left_images_512x384// ./assets/input_images/right_images_512x384/ --output ./assets/out_images --from-pretrained ./checkpoints/bridge_rvc_pretrain.pth
+python infer.py --input ./assets/input_images/left_images_512x384/ ./assets/input_images/right_images_512x384/ --output ./assets/out_images --from-pretrained ./checkpoints/bridge_rvc_pretrain.pth
+```
+
+
+## docker 打包
+```bash
+# 1.构建 dockerfile 文件
+# 2.复制 docker 文件夹到 /mnt/data2/zy_2025/github_store/BridgeDepth 路径
+cp -r /home/zqdl_ai2060/zy_account/model_3d/model_examples/BridgeDepth/docker /mnt/data2/zy_2025/github_store/BridgeDepth
+
+# 3.打开代理 privoxy
+
+# 4.构建镜像
+cd /mnt/data2/zy_2025/github_store/BridgeDepth/docker
+bash build_image.sh
+
+# 5.运行容器
+cd /mnt/data2/zy_2025/github_store/BridgeDepth/docker
+bash run_contain.sh
+conda activate myenv
+python infer.py --input ./assets/input_images/left_images_512x384/ ./assets/input_images/right_images_512x384/ --output ./docker_demo_output --from-pretrained ./checkpoints/bridge_rvc_pretrain.pth
 ```

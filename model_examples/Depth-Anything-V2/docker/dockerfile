@@ -1,0 +1,82 @@
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+
+# ========== 支持构建时传入代理 ==========
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+ARG http_proxy
+ARG https_proxy
+
+ENV HTTP_PROXY=${HTTP_PROXY}
+ENV HTTPS_PROXY=${HTTPS_PROXY}
+ENV http_proxy=${http_proxy}
+ENV https_proxy=${https_proxy}
+
+# 设置非交互式安装
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 安装系统依赖（✅ 在系统层安装）
+RUN apt-get update && apt-get install -y \
+    git \
+    wget \
+    curl \
+    unzip \
+    build-essential \
+    cmake \
+    ninja-build \
+    pkg-config \
+    python3-pip \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxrender1 \
+    libxext6 \
+    libsparsehash-dev \
+    libopenblas-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+    
+# 安装 Miniconda 并接受 ToS
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
+    bash /tmp/miniconda.sh -b -p /opt/conda && \
+    rm /tmp/miniconda.sh && \
+    # ✅ 关键：接受服务条款
+    /opt/conda/bin/conda init bash && \
+    . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate base && \
+    /opt/conda/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
+    /opt/conda/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r && \
+    # 继续更新 conda 和清理
+    /opt/conda/bin/conda update -n base -c defaults conda -y && \
+    /opt/conda/bin/conda clean -ya
+
+
+# 设置 Conda 路径（仅 base）
+ENV PATH /opt/conda/bin:$PATH
+
+# 创建并更新 Conda 环境
+RUN conda create -n myenv python=3.10 -y
+
+# 复制项目文件
+COPY . /model/Depth-Anything-V2
+
+# 明确指定 requirements.txt 的完整路径 install
+RUN conda run -n myenv pip install -r /model/Depth-Anything-V2/requirements.txt
+
+# 在 myenv 环境中安装核心包
+RUN conda run -n myenv pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu121
+
+RUN conda run -n myenv pip install matplotlib==3.10.7
+
+# 设置工作目录
+WORKDIR /model/Depth-Anything-V2
+
+
+
+
+
+# 入口点
+# 入口点：运行 test_depth.py
+ENTRYPOINT ["conda", "run", "-n", "myenv", "python","./run.py"]
+
+# 默认参数
+CMD ["--encoder","vitl","--img-path","assets/pic","--outdir","docker_demo_output"]

@@ -1,0 +1,89 @@
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+
+# ========== 支持构建时传入代理 ==========
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+
+# 设置环境变量（有值就设置，没值就空）
+ENV HTTP_PROXY=${HTTP_PROXY}
+ENV HTTPS_PROXY=${HTTPS_PROXY}
+
+# 只有在有值时才设置小写版本（避免空值污染环境）
+RUN if [ -n "$HTTP_PROXY" ]; then export http_proxy=$HTTP_PROXY; fi && \
+    if [ -n "$HTTPS_PROXY" ]; then export https_proxy=$HTTPS_PROXY; fi
+
+# 设置非交互式安装
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 安装系统依赖（✅ 在系统层安装）
+RUN apt-get update && apt-get install -y \
+    git \
+    wget \
+    curl \
+    unzip \
+    build-essential \
+    cmake \
+    ninja-build \
+    pkg-config \
+    python3-pip \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxrender1 \
+    libxext6 \
+    libsparsehash-dev \
+    libopenblas-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+    
+# 安装 Miniconda 并接受 ToS
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
+    bash /tmp/miniconda.sh -b -p /opt/conda && \
+    rm /tmp/miniconda.sh && \
+    # ✅ 关键：接受服务条款
+    /opt/conda/bin/conda init bash && \
+    . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate base && \
+    /opt/conda/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
+    /opt/conda/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r && \
+    # 继续更新 conda 和清理
+    /opt/conda/bin/conda update -n base -c defaults conda -y && \
+    /opt/conda/bin/conda clean -ya
+
+
+# 设置 Conda 路径（仅 base）
+ENV PATH /opt/conda/bin:$PATH
+
+# 创建并更新 Conda 环境
+RUN conda create -n myenv python=3.10 -y
+
+# 设置工作目录
+WORKDIR /model/MoGe
+
+# 复制项目文件
+COPY . /model/MoGe
+
+RUN cd utils3d && conda run -n myenv pip install -e .
+
+# 明确指定 requirements.txt 的完整路径 install
+RUN conda run -n myenv pip install -r /model/MoGe/requirements.txt
+
+RUN conda run -n myenv pip install filelock==3.20.0
+
+RUN conda run -n myenv pip install opencv-python==4.12.0.88
+
+RUN conda run -n myenv pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu121
+
+RUN conda run -n myenv pip install packaging requests python-dateutil tzdata matplotlib
+
+
+
+RUN pip install -e .
+
+
+# 入口点：运行 test_depth.py
+ENTRYPOINT ["conda", "run", "-n", "myenv", "moge","infer"]
+
+# 默认参数
+CMD ["-i", "./assets/PLDM_images/aug_data0_0_0/", "--pretrained", "./Ruicheng/moge-2-vitl-normal/model.pt", "-o", "./assets/PLDM_images/output_images", "--maps", "--ply", "--glb"]
+
