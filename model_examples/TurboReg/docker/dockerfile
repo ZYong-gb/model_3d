@@ -33,9 +33,16 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libsparsehash-dev \
     libopenblas-dev \
+    libeigen3-dev \
+    # 新增依赖,升级GCC到10
+    gcc-10 \
+    g++-10 \
     && rm -rf /var/lib/apt/lists/*
 
-    
+# 配置 gcc/g++ 默认版本为 10 ✅
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10
+
+
 # 安装 Miniconda 并接受 ToS
 RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
     bash /tmp/miniconda.sh -b -p /opt/conda && \
@@ -54,36 +61,22 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86
 # 设置 Conda 路径（仅 base）
 ENV PATH /opt/conda/bin:$PATH
 
-# 创建并更新 Conda 环境
-RUN conda create -n myenv python=3.10 -y
+RUN conda create -n myenv python=3.11 -y
 
-# 设置工作目录
-WORKDIR /model/MoGe
+WORKDIR /model/TurboReg
 
 # 复制项目文件
-COPY . /model/MoGe
-
-RUN cd utils3d && conda run -n myenv pip install -e .
-
-# 明确指定 requirements.txt 的完整路径 install
-RUN conda run -n myenv pip install -r /model/MoGe/requirements.txt
-
-RUN conda run -n myenv pip install filelock==3.20.0
-
-RUN conda run -n myenv pip install opencv-python==4.12.0.88
+COPY . /model/TurboReg
 
 RUN conda run -n myenv pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu121
 
-RUN conda run -n myenv pip install packaging requests python-dateutil tzdata matplotlib
+RUN conda run -n myenv pip install open3d==0.19.0 tyro==0.9.35
 
-
-
-RUN pip install -e .
-
+RUN cd /model/TurboReg/bindings && conda run -n myenv pip install . --no-build-isolation
+# 禁用构建隔离：--no-build-isolation 参数,告诉 pip：不要创建干净的构建环境，直接使用当前 Python 环境中的已安装包。
 
 # 入口点：运行 test_depth.py
-ENTRYPOINT ["conda", "run", "-n", "myenv", "moge","infer"]
-
+ENTRYPOINT ["conda", "run", "-n", "myenv"]
 # 默认参数
-CMD ["-i", "./assets/杂物与输电线/", "--pretrained", "./Ruicheng/moge-2-vitl-normal/model.pt", "-o", "./docker_demo_output", "--maps", "--ply", "--glb"]
+CMD ["python", "run_my_ply_file.py"]
 

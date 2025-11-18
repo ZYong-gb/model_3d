@@ -1,0 +1,107 @@
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+# FROM nvidia/cuda:11.4.3-cudnn8-devel-ubuntu20.04
+
+# ========== 支持构建时传入代理 ==========
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+
+# 设置环境变量（有值就设置，没值就空）
+ENV HTTP_PROXY=${HTTP_PROXY}
+ENV HTTPS_PROXY=${HTTPS_PROXY}
+
+# 只有在有值时才设置小写版本（避免空值污染环境）
+RUN if [ -n "$HTTP_PROXY" ]; then export http_proxy=$HTTP_PROXY; fi && \
+    if [ -n "$HTTPS_PROXY" ]; then export https_proxy=$HTTPS_PROXY; fi
+
+# 设置非交互式安装
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 安装系统依赖（✅ 在系统层安装）
+RUN apt-get update && apt-get install -y \
+    git \
+    wget \
+    curl \
+    unzip \
+    build-essential \
+    cmake \
+    ninja-build \
+    pkg-config \
+    python3-pip \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxrender1 \
+    libxext6 \
+    libsparsehash-dev \
+    libopenblas-dev \
+#     # 新增依赖,升级GCC到10
+    gcc-9 \
+    g++-9 \
+    && rm -rf /var/lib/apt/lists/*
+
+# # 配置 gcc/g++ 默认版本为 10 ✅
+# RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10
+
+# 配置默认 gcc 版本为 9
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
+RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
+
+# 安装 Miniconda 并接受 ToS
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
+    bash /tmp/miniconda.sh -b -p /opt/conda && \
+    rm /tmp/miniconda.sh && \
+    # ✅ 关键：接受服务条款
+    /opt/conda/bin/conda init bash && \
+    . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate base && \
+    /opt/conda/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
+    /opt/conda/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r && \
+    # 继续更新 conda 和清理
+    /opt/conda/bin/conda update -n base -c defaults conda -y && \
+    /opt/conda/bin/conda clean -ya
+
+
+# 设置 Conda 路径（仅 base）
+ENV PATH /opt/conda/bin:$PATH
+
+RUN conda create -n myenv python=3.9 -y
+
+RUN conda run -n myenv pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116
+
+RUN conda run -n myenv ipython==8.18.1
+
+RUN conda run -n myenv conda install sparsehash -y
+
+RUN conda run -n myenv pip install ray==2.51.1 \
+    transforms3d==0.4.2 \
+    tqdm==4.67.1 \
+    opencv-python==4.8.1.78 \
+    numba==0.60.0 \
+    tensorboardX==2.6.4 \
+    scikit-image==0.22.0 \
+    trimesh==4.9.0 \
+    yacs==0.1.8 \
+    h5py==3.14.0 \
+    loguru==0.7.3 \
+    pyrender==0.1.45 \
+    pyglet==2.1.11 \
+    open3d==0.19.0 \
+    numpy==1.26.4 \
+    --no-build-isolation
+
+RUN CC=gcc-9 CXX=g++-9 conda run -n myenv pip install git+https://github.com/mit-han-lab/torchsparse.git@v1.4.0
+
+WORKDIR /model/VisFusion
+COPY . /model/VisFusion
+
+# 为 entrypoint.sh 增加执行权限
+RUN chmod +x /model/VisFusion/docker/entrypoint.sh
+
+# 通常用于缓解或避免在训练/推理过程中可能出现的 CUDA "out of memory" (OOM) 错误，特别是在内存碎片化严重的情况下。它允许内存分配器更灵活地管理显存块。
+# ENV PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
+# 入口点：运行 test_depth.py
+ENTRYPOINT ["conda", "run", "-n", "myenv"]
+# 默认参数
+# CMD ["python", "main.py", "--cfg","./config/test.yaml", "SCENE","scene0785_00", "TEST.PATH","./data_store/example_data/ScanNet/", "LOGDIR","./checkpoints", "LOADCKPT","pretrained/model_000049.ckpt"]
+CMD [ "bash","./docker/entrypoint.sh" ]

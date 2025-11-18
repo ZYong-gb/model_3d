@@ -20,10 +20,11 @@ pip install ipython
 conda install sparsehash -y
 
 export https_proxy=http://2.2.2.122:8118 http_proxy=http://2.2.2.122:8118
+
 pip install ray transforms3d tqdm opencv-python numba tensorboardX scikit-image trimesh yacs h5py loguru
 pip install pyrender pyglet open3d
 
-# correct 
+# correct 指定cuda的版本为11.3
 export PATH=/usr/local/cuda-11.3/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda-11.3/lib64:$LD_LIBRARY_PATH
 
@@ -79,7 +80,30 @@ scp -P 11202 -r zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/VisFus
 #                 MODEL.SINGLE_LAYER_MESH True
 ```
 
-# 使用 docker 进行环境隔离
+# 使用 docker 进行打包
 ```bash
+# 1.构建 dockerfile 文件
+# 2.复制 docker 文件夹到 /mnt/data2/zy_2025/github_store/BridgeDepth 路径
+cp -r /home/zqdl_ai2060/zy_account/model_3d/model_examples/VisFusion/docker /mnt/data2/zy_2025/github_store/VisFusion
 
+# 3.打开代理 privoxy
+
+# 4.构建镜像
+cd /mnt/data2/zy_2025/github_store/VisFusion/docker
+bash build_image.sh
+
+# 5.运行容器
+cd /mnt/data2/zy_2025/github_store/VisFusion/docker
+bash run_container.sh
+
+# 输入卷挂载：
+# /mnt/data2/zy_2025/github_store/VisFusion/data_store/example_data/:/model/VisFusion/data_store/example_data  
+# 输出卷挂载：
+# /mnt/data2/zy_2025/github_store/VisFusion/results:/model/VisFusion/results 
+
+# 查看输出结果图片：
+# 宿主机：
+cd /mnt/data2/zy_2025/github_store/VisFusion/results
+# 容器内部：
+cd /model/TurboReg/docker_demo_output
 ```

@@ -70,3 +70,31 @@ python run_my_ply_file.py
 ```
 ## 将结果传出到 122
 scp -P 11202 -r zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/TurboReg/out_trans_my D:\images\TurboReg
+
+
+
+## docker 打包
+```bash
+# 1.构建 dockerfile 文件
+# 2.复制 docker 文件夹到 /mnt/data2/zy_2025/github_store/BridgeDepth 路径
+cp -r /home/zqdl_ai2060/zy_account/model_3d/model_examples/TurboReg/docker /mnt/data2/zy_2025/github_store/TurboReg
+
+# 3.打开代理 privoxy
+
+# 4.构建镜像
+cd /mnt/data2/zy_2025/github_store/TurboReg/docker
+bash build_image.sh
+
+# 5.运行容器
+cd /mnt/data2/zy_2025/github_store/TurboReg/docker
+bash run_container.sh
+
+# 输出结果卷挂载：
+# /mnt/data2/zy_2025/github_store/TurboReg/docker_demo_output:/model/TurboReg/docker_demo_output
+# 查看输出结果图片：
+# 宿主机：
+cd /mnt/data2/zy_2025/github_store/TurboReg/docker_demo_output
+# 容器内部：
+cd /model/TurboReg/docker_demo_output
+
+```

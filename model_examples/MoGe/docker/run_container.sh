@@ -21,4 +21,5 @@ docker run -it \
     --gpus all \
     --name moge_container \
     -v "$DIR"/../docker_demo_output:/model/MoGe/docker_demo_output \
-    moge:latest
+    moge:latest \
+    -i ./assets/杂物与输电线/ --pretrained ./Ruicheng/moge-2-vitl-normal/model.pt -o ./docker_demo_output --maps --ply --glb

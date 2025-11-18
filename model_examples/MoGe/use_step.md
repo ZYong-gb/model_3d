@@ -119,8 +119,10 @@ cd /mnt/data2/zy_2025/github_store/MoGe/docker
 bash run_container.sh
 
 # 输出结果卷挂载：
-# /mnt/data2/zy_2025/github_store/Depth-Anything-V2-main/docker_demo_output:/model/Depth-Anything-V2/docker_demo_output
-# 查看图片：
-cd /mnt/data2/zy_2025/github_store/Depth-Anything-V2-main/docker_demo_output
-cd /model/Depth-Anything-V2/docker_demo_output
+# /mnt/data2/zy_2025/github_store/MoGe/docker_demo_output:/model/MoGe/docker_demo_output
+# 查看输出结果图片：
+# 宿主机：
+cd /mnt/data2/zy_2025/github_store/MoGe/docker_demo_output
+# 容器内部：
+cd /model/MoGe/docker_demo_output
 ```
