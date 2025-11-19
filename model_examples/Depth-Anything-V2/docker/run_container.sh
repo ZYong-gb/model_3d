@@ -21,4 +21,5 @@ docker run -it \
     --gpus all \
     --name depth_anything_v2_container \
     -v "$DIR"/../docker_demo_output:/model/Depth-Anything-V2/docker_demo_output \
+    -v /mnt/data2/zy_2025/pretrained:/root/.cache/torch/hub/checkpoints \
     depth_anything_v2:latest

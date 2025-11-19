@@ -116,12 +116,26 @@ if __name__=="__main__":
       o3d.io.write_point_cloud(f'{args.out_dir}/cloud_denoise.ply', inlier_cloud)
       pcd = inlier_cloud
 
-    logging.info("Visualizing point cloud. Press ESC to exit.")
-    vis = o3d.visualization.Visualizer()
-    vis.create_window()
-    vis.add_geometry(pcd)
-    vis.get_render_option().point_size = 1.0
-    vis.get_render_option().background_color = np.array([0.5, 0.5, 0.5])
-    vis.run()
-    vis.destroy_window()
+    # logging.info("Visualizing point cloud. Press ESC to exit.")
+    # vis = o3d.visualization.Visualizer()
+    # vis.create_window()
+    # vis.add_geometry(pcd)
+    # vis.get_render_option().point_size = 1.0
+    # vis.get_render_option().background_color = np.array([0.5, 0.5, 0.5])
+    # vis.run()
+    # vis.destroy_window()
 
+    # # Try to visualize; skip if in headless environment (e.g., Docker)
+    # try:
+    #     logging.info("Visualizing point cloud. Press ESC to exit.")
+    #     vis = o3d.visualization.Visualizer()
+    #     if vis.create_window():  # Returns True on success
+    #         vis.add_geometry(pcd)
+    #         vis.get_render_option().point_size = 1.0
+    #         vis.get_render_option().background_color = np.array([0.5, 0.5, 0.5])
+    #         vis.run()
+    #         vis.destroy_window()
+    #     else:
+    #         logging.warning("Failed to create Open3D window (headless environment). Skipping visualization.")
+    # except Exception as e:
+    #     logging.warning(f"Visualization failed: {e}. Skipping.")

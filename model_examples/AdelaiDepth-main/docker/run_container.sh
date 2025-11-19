@@ -13,11 +13,7 @@ echo "Running adelaidepth_main_container with GPU..."
 docker run -it \
     --gpus all \
     --name adelaidepth_main_container \
-    -v "$DIR"/Minist_Test/test_images:/model/Minist_Test/test_images \
+    -v /mnt/data2/zy_2025/github_store/AdelaiDepth-main/LeReS/Minist_Test/test_images:/model/AdelaiDepth-main/LeReS/Minist_Test/test_images \
     -w /model/AdelaiDepth-main/LeReS/Minist_Test \
     --entrypoint /bin/bash \
     adelaidepth_main:latest
-
-
-
-

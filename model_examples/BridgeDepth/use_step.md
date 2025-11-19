@@ -107,5 +107,14 @@ bash build_image.sh
 cd /mnt/data2/zy_2025/github_store/BridgeDepth/docker
 bash run_contain.sh
 conda activate myenv
+export https_proxy=http://2.2.2.110:8118 http_proxy=http://2.2.2.110:8118
+
 python infer.py --input ./assets/input_images/left_images_512x384/ ./assets/input_images/right_images_512x384/ --output ./docker_demo_output --from-pretrained ./checkpoints/bridge_rvc_pretrain.pth
+
+
+# 查看输出结果图片：
+# 宿主机：
+cd /mnt/data2/zy_2025/github_store/BridgeDepth/docker_demo_output
+# 容器内部：
+cd /model/BridgeDepth/docker_demo_output
 ```

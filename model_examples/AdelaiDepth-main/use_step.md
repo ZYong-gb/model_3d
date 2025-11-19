@@ -61,13 +61,14 @@ conda activate LeRes
 
 
 
-## docker 打包
+## docker 打包 1
 ### 复制项目文件 requirements.txt 到 model_3d/model_examples/AdelaiDepth-main/docker 路径
 ```bash
-cp /home/zqdl_ai2060/zy_account/AdelaiDepth-main/LeReS/requirements.txt /home/zqdl_ai2060/zy_account/model_3d/model_examples/AdelaiDepth-main/docker
-cp -r /home/zqdl_ai2060/zy_account/AdelaiDepth-main/LeReS/torchsparse-1.2.0 /home/zqdl_ai2060/zy_account/model_3d/model_examples/AdelaiDepth-main/docker
-cp -r /home/zqdl_ai2060/zy_account/AdelaiDepth-main/LeReS/Minist_Test /home/zqdl_ai2060/zy_account/model_3d/model_examples/AdelaiDepth-main/docker
+# cp /home/zqdl_ai2060/zy_account/AdelaiDepth-main/LeReS/requirements.txt /home/zqdl_ai2060/zy_account/model_3d/model_examples/AdelaiDepth-main/docker
+# cp -r /home/zqdl_ai2060/zy_account/AdelaiDepth-main/LeReS/torchsparse-1.2.0 /home/zqdl_ai2060/zy_account/model_3d/model_examples/AdelaiDepth-main/docker
+# cp -r /home/zqdl_ai2060/zy_account/AdelaiDepth-main/LeReS/Minist_Test /home/zqdl_ai2060/zy_account/model_3d/model_examples/AdelaiDepth-main/docker
 
+cp -r /home/zqdl_ai2060/zy_account/AdelaiDepth-main /mnt/data2/zy_2025/github_store
 ```
 ### 移动 docker 文件夹到/mnt
 mv /home/zqdl_ai2060/zy_account/model_3d/model_examples/AdelaiDepth-main/docker /mnt/data2/zy_2025/github_store/AdelaiDepth
@@ -104,4 +105,55 @@ python ./tools/test_shape.py --load_ckpt res50.pth --backbone resnet50
 python ./tools/test_depth.py --load_ckpt res101.pth --backbone resnext101
 # 生成3d点云图:
 python ./tools/test_shape.py --load_ckpt res101.pth --backbone resnext101
+
+
+# 查看输出结果
+# 宿主机：
+cd /mnt/data2/zy_2025/github_store/Minist_Test/test_images
+# 容器内：
+cd /model/AdelaiDepth-main/LeReS/Minist_Test/test_images/outputs
+```
+
+
+## docker 打包2
+```bash
+# 1.构建 dockerfile 文件
+# 2.复制 docker 文件夹到 /mnt/data2/zy_2025/github_store/BridgeDepth 路径
+cp -r /home/zqdl_ai2060/zy_account/model_3d/model_examples/AdelaiDepth-main/docker /mnt/data2/zy_2025/github_store/AdelaiDepth-main/LeReS
+
+# 3.打开代理 privoxy
+
+# 4.构建镜像
+cd /mnt/data2/zy_2025/github_store/AdelaiDepth-main/LeReS/docker
+bash build_image.sh
+
+# 5.启动容器
+cd /mnt/data2/zy_2025/github_store/AdelaiDepth-main/LeReS/docker
+bash run_container.sh
+
+# 在容器中激活环境 myenv
+conda activate myenv
+
+# 运行文件，开始推理
+cd /model/AdelaiDepth-main/LeReS/Minist_Test
+# 使用 ResNet50 backbone 框架生成3d图
+# 生成深度图：
+python ./tools/test_depth.py --load_ckpt res50.pth --backbone resnet50
+# 生成3d点云图:
+python ./tools/test_shape.py --load_ckpt res50.pth --backbone resnet50
+
+# 使用 ResNeXt101 backbone 框架生成3d图
+# 生成深度图：
+python ./tools/test_depth.py --load_ckpt res101.pth --backbone resnext101
+# 生成3d点云图:
+python ./tools/test_shape.py --load_ckpt res101.pth --backbone resnext101
+
+
+# 输入：
+cd /mnt/data2/zy_2025/github_store/AdelaiDepth-main/LeReS/Minist_Test/test_images
+# 查看输出结果
+# 宿主机：
+cd /mnt/data2/zy_2025/github_store/AdelaiDepth-main/LeReS/Minist_Test/test_images/outputs
+# 容器内：
+cd /model/AdelaiDepth-main/LeReS/Minist_Test/test_images/outputs
 ```

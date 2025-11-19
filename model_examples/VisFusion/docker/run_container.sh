@@ -13,14 +13,17 @@ echo "Running visfusion_container with GPU..."
 # docker run -it \
 #     --gpus all \
 #     --name visfusion_container \
+#     --shm-size=8g \
 #     -v "$DIR"/../data_store/example_data/:/model/VisFusion/data_store/example_data \
 #     -v "$DIR"/../results:/model/VisFusion/results \
 #     --entrypoint /bin/bash \
 #     visfusion:latest
 
+
 docker run -it \
     --gpus all \
     --name visfusion_container \
+    --shm-size=8g \
     -v "$DIR"/../data_store/example_data/:/model/VisFusion/data_store/example_data \
     -v "$DIR"/../results:/model/VisFusion/results \
     visfusion:latest

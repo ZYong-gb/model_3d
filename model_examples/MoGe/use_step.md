@@ -101,6 +101,7 @@ scp -P 11202 -r zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/MoGe/a
 scp -P 11202 -r zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/MoGe/assets/杂物与输电线 D:\images\MoGe
 ```
 
+moge infer -i ./assets/cut_pic/ --pretrained ./Ruicheng/moge-2-vitl-normal/model.pt -o ./docker_demo_output --maps --ply --glb
 
 ## docker 打包
 ```bash
@@ -113,6 +114,14 @@ cp -r /home/zqdl_ai2060/zy_account/model_3d/model_examples/MoGe/docker /mnt/data
 # 4.构建镜像
 cd /mnt/data2/zy_2025/github_store/MoGe/docker
 bash build_image.sh
+
+#  下载预训练权重文件
+cd /mnt/data2/zy_2025/pretrained
+wget https://download.pytorch.org/models/mnasnet1.0_top1_73.512-f206786ef8.pth # 启动容器时挂载该路径到容器
+
+# 清理输出缓存
+cd /mnt/data2/zy_2025/github_store/MoGe/docker_demo_output
+rm -rf *
 
 # 5.运行容器
 cd /mnt/data2/zy_2025/github_store/MoGe/docker

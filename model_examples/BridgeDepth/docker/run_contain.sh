@@ -14,6 +14,7 @@ docker run -it \
     --gpus all \
     --name bridgedepth_container \
     -v "$DIR"/../docker_demo_output:/model/BridgeDepth/docker_demo_output \
+    -v /mnt/data2/zy_2025/pretrained:/root/.cache/torch/hub/checkpoints \
     --entrypoint /bin/bash \
     bridgedepth:latest
 

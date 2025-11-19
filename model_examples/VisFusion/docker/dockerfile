@@ -70,7 +70,9 @@ RUN conda run -n myenv pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116
 
 RUN conda run -n myenv ipython==8.18.1
 
-RUN conda run -n myenv conda install sparsehash -y
+# RUN conda run -n myenv conda install sparsehash -y
+RUN conda install -n myenv -c conda-forge sparsehash -y
+
 
 RUN conda run -n myenv pip install ray==2.51.1 \
     transforms3d==0.4.2 \
@@ -89,7 +91,7 @@ RUN conda run -n myenv pip install ray==2.51.1 \
     numpy==1.26.4 \
     --no-build-isolation
 
-RUN CC=gcc-9 CXX=g++-9 conda run -n myenv pip install git+https://github.com/mit-han-lab/torchsparse.git@v1.4.0
+RUN CC=gcc-9 CXX=g++-9 conda run -n myenv pip install git+https://github.com/mit-han-lab/torchsparse.git@v1.4.0 --no-build-isolation
 
 WORKDIR /model/VisFusion
 COPY . /model/VisFusion

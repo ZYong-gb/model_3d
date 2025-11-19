@@ -70,3 +70,29 @@ conda activate myenv
 python scripts/run_demo.py --left_file ./assets/left.png --right_file ./assets/right.png --ckpt_dir ./pretrained_models/11-33-40/model_best_bp2.pth --out_dir ./docker_test_outputs/
 
 ```
+
+# docker 打包 2
+```bash
+# 1.构建 dockerfile 文件
+# 2.复制 docker 文件夹到 /mnt/data2/zy_2025/github_store/BridgeDepth 路径
+cp -r /home/zqdl_ai2060/zy_account/model_3d/model_examples/FoundationStereo/docker_2 /mnt/data2/zy_2025/github_store/FoundationStereo
+
+# 3.打开代理 privoxy
+
+# 4.构建镜像
+cd /mnt/data2/zy_2025/github_store/FoundationStereo/docker_2
+bash build_image.sh
+
+# 5.运行容器
+cd /mnt/data2/zy_2025/github_store/FoundationStereo/docker_2
+bash run_container.sh
+
+# 输出结果卷挂载：
+# /mnt/data2/zy_2025/github_store/MoGe/docker_demo_output:/model/MoGe/docker_demo_output
+# 查看输出结果图片：
+# 宿主机：
+cd /mnt/data2/zy_2025/github_store/FoundationStereo/docker_demo_output
+# 容器内部：
+cd /model/FoundationStereo/docker_demo_output
+
+```
