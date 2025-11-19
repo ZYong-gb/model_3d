@@ -26,7 +26,7 @@ cd /mnt/data2/zy_2025/github_store/AdelaiDepth-main/LeReS/Minist_Test/test_image
 cd /model/AdelaiDepth-main/LeReS/Minist_Test/test_images/outputs
 ```
 
-## FoundationStereo 555555
+## FoundationStereo 
 生成点云图,双目相机
 ```bash
 # 运行容器
