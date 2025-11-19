@@ -42,6 +42,7 @@ cd /mnt/data2/zy_2025/github_store/Depth-Anything-V2-main
 
 # cp photo
 cp /home/zqdl_ai2060/zy_account/AdelaiDepth-main/LeReS/Minist_Test/test_images/*.jpg /mnt/data2/zy_2025/github_store/Depth-Anything-V2-main/assets/examples/zqdl_shinei
+cp /mnt/data2/zy_2025/github_store/MoGe/assets/full_scene/PANO_20251119_120902.jpg /mnt/data2/zy_2025/github_store/Depth-Anything-V2-main/assets/examples/full_scene
 
 # run photo to dept
 python model_use.py
@@ -58,6 +59,9 @@ python run.py --encoder vitl --img-path assets/examples --outdir assets/out_imag
 # 测试 输电线图片
 cp -r /home/zqdl_ai2060/zy_account/model_3d/images/pic /mnt/data2/zy_2025/github_store/Depth-Anything-V2-main/assets
 python run.py --encoder vitl --img-path assets/pic --outdir assets/pic_dept
+
+python run.py --encoder vitl --img-path assets/examples/full_scene --outdir assets/examples/full_scene/output
+
 ```
 ### 视频生成深度图
 ```bash
@@ -71,7 +75,7 @@ python run_video.py --encoder vitl --video-path assets/examples_video --outdir a
 
 ### 将结果图传到 windows 系统查看
 scp -P 11202 -r zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/Depth-Anything-V2-main/assets D:\images\Depth-Anything-V2
-
+scp -P 11202 -r zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/Depth-Anything-V2-main/assets/examples/full_scene/output D:\images\Depth-Anything-V2\assets\full_scene
 
 
 ## docker 打包

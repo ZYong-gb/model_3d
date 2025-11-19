@@ -51,6 +51,7 @@ pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https
 - scp -P 11202 -r D:\images\MoGe\cut_pic zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/MoGe/assets
 - scp -P 11202 -r D:\project_all\photo2D_to_3D_point_cloud\photo_RGB_D\PLDM_images\ zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/MoGe/assets
 - scp -P 11202 -r D:\images\杂物与输电线\ zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/MoGe/assets
+- scp -P 11202 -r D:\images\full_scene\ zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/MoGe/assets
 
 ### 复制模型运行文件 model_use.py 到 /mnt/data2/zy_2025/github_store/MoGe 路径下
 cp /home/zqdl_ai2060/zy_account/model_3d/model_examples/MoGe/model_use.py /mnt/data2/zy_2025/github_store/MoGe
@@ -88,6 +89,7 @@ moge infer -i ./assets/keywords/ --pretrained ./Ruicheng/moge-2-vitl-normal/mode
 moge infer -i ./assets/cut_pic/ --pretrained ./Ruicheng/moge-2-vitl-normal/model.pt -o ./assets/cut_pic/output_images --maps --ply --glb
 moge infer -i ./assets/PLDM_images/aug_data0_0_0/ --pretrained ./Ruicheng/moge-2-vitl-normal/model.pt -o ./assets/PLDM_images/output_images --maps --ply --glb
 moge infer -i ./assets/杂物与输电线/ --pretrained ./Ruicheng/moge-2-vitl-normal/model.pt -o ./assets/杂物与输电线/output_images --maps --ply --glb
+moge infer -i ./assets/full_scene/ --pretrained ./Ruicheng/moge-2-vitl-normal/model.pt -o ./assets/full_scene/output_images --maps --ply --glb
 
 # Show the result in a window (requires pyglet < 2.0, e.g. pip install pyglet==1.5.29)
 # moge infer -i IMAGES_FOLDER_OR_IMAGE_PATH --o OUTPUT_FOLDER --show
@@ -99,9 +101,11 @@ scp -P 11202 -r zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/MoGe/a
 scp -P 11202 -r zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/MoGe/assets/cut_pic D:\images\MoGe
 scp -P 11202 -r zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/MoGe/assets/PLDM_images D:\images\MoGe
 scp -P 11202 -r zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/MoGe/assets/杂物与输电线 D:\images\MoGe
+scp -P 11202 -r zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/MoGe/assets/full_scene D:\images\MoGe
 ```
 
 moge infer -i ./assets/cut_pic/ --pretrained ./Ruicheng/moge-2-vitl-normal/model.pt -o ./docker_demo_output --maps --ply --glb
+
 
 ## docker 打包
 ```bash

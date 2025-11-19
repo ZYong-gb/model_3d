@@ -35,7 +35,7 @@ pip install numpy==1.23.5
 scp -P 11202 -r D:\project_all\双目摄像机\saved_frames\* zqdl_ai2060@183.221.0.158:/home/zqdl_ai2060/zy_account/AdelaiDepth-main/LeReS/Minist_Test/test_images
 scp -P 11202 -r D:\images\AdelaiDepth_outputs\input_images\* zqdl_ai2060@183.221.0.158:/home/zqdl_ai2060/zy_account/AdelaiDepth-main/LeReS/Minist_Test/test_images
 # 文件传出
-scp -P 11202 -r zqdl_ai2060@183.221.0.158:/home/zqdl_ai2060/zy_account/AdelaiDepth-main/LeReS/Minist_Test/test_images D:\images\AdelaiDepth_outputs\
+scp -P 11202 -r zqdl_ai2060@183.221.0.158:/home/zqdl_ai2060/zy_account/AdelaiDepth-main/LeReS/Minist_Test/test_images D:\images\AdelaiDepth_outputs\full_sence
 
 ```
 6. 开始运行代码 steps1：
