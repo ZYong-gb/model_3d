@@ -13,7 +13,8 @@
 - model_3d/model_examples/TurboReg：3D点云配准算法项目
 - model_3d/model_examples/VisFusion： 通过RGB、深度、相机位姿和内参数据实时重建3d模型（训练的ckpt用于高质量重建）
 - model_3d/model_examples/Marigold: 密集图像分析任务，包括单目深度估计、表面法线预测以及图像内在结构分析（模型下载太慢）
-
+- OpenPCDet :3d 检测
+- Depth-Anything-3 
 
 ## mistake model
 ### model_3d/model_examples/facebook/map_anything—X

@@ -32,6 +32,7 @@ cd /model/AdelaiDepth-main/LeReS/Minist_Test/test_images/outputs
 # 运行容器
 cd /mnt/data2/zy_2025/github_store/FoundationStereo/docker_2
 bash run_container.sh
+# 运行后可视化部分会产生警告，这是正常的
 
 # 查看输出结果图片：
 # 宿主机：
