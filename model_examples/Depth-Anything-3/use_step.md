@@ -1,5 +1,6 @@
 # 项目 Depth Anything 3
-它能从任意视觉输入中预测出具有空间一致性的几何结构，无论是否已知相机的姿态信息，并且支持多视图深度估计与姿态估计
+- 它能从任意视觉输入中预测出具有空间一致性的几何结构，无论是否已知相机的姿态信息，并且支持多视图深度估计与姿态估计
+- 生成深度图以及使用多视图RGB和深度图生成融合后的3d点云数据，（官方仅提供单卡推理实现）
 
 ## Virtual env 中使用
 ### clone
@@ -215,7 +216,11 @@ da3 auto assets/examples/zqdl_shinei \
     --export-format glb-npz \
     --export-dir ${GALLERY_DIR}/examples/zqdl_shinei/ \
     --model-dir ${MODEL_DIR} \
+    --device cuda:1 \
     --auto-cleanup
+
+# --device 参数: cpu, cuda, ipu, xpu, mkldnn, opengl, opencl, ideep, hip, ve, fpga, ort, xla, lazy, vulkan, mps, meta, hpu, mtia ,无实现多卡代码
+
 
 # 输出结果卷挂载：
     # -v /mnt/data2/zy_2025/github_store/Depth-Anything-3/assets:/model/Depth-Anything-3/assets \
