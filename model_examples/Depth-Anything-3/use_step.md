@@ -186,6 +186,19 @@ bash build_image.sh
 cd /mnt/data2/zy_2025/github_store/Depth-Anything-3/docker
 bash run_container.sh
 
+
+# 相机位姿数据查看：
+# 容器内部运行：
+cd /model/Depth-Anything-3/tools
+conda activate myenv
+python basic_usage.py -i ../assets/examples/zqdl_shinei -o ../output_da3/zqdl_shinei
+# 结果保存在:
+# /mnt/data2/zy_2025/github_store/Depth-Anything-3/output_da3 中
+# /mnt/data2/zy_2025/github_store/Depth-Anything-3/output_da3
+# scp -r /mnt/data2/zy_2025/github_store/Depth-Anything-3/output_da3
+# scp -r -P 11202 zqdl_ai2060@183.221.0.158:/mnt/data2/zy_2025/github_store/Depth-Anything-3/output_da3 D:\images\Depth-Anything-3
+
+# 点云数据生成：
 # 容器内部运行：
 cd /model/Depth-Anything-3
 conda activate myenv
